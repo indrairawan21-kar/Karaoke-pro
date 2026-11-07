@@ -57,11 +57,23 @@ jobs:
           p.write_text(s)
           PY
 
-      - name: Bangun APK
+     - name: Bangun APK
         run: gradle -p project assembleDebug
+
+      - name: Periksa lokasi APK
+        run: |
+          echo "Mencari file APK..."
+          find project -type f -name "*.apk" -print
+          test -f project/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Simpan APK
         uses: actions/upload-artifact@v4
         with:
           name: Karaoke-Pro-APK
           path: project/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+      
+      
+        
+          
+      
