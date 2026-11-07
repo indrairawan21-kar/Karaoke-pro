@@ -1,3 +1,4 @@
+
 name: Build Karaoke Pro APK
 
 on:
@@ -22,7 +23,7 @@ jobs:
           java-version: '17'
 
       - name: Siapkan Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@v3
 
       - name: Pasang Android SDK 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
@@ -30,12 +31,31 @@ jobs:
       - name: Siapkan Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '17'
+          gradle-version: '8.9'
 
       - name: Ekstrak proyek
         run: |
           mkdir project
           unzip -q KaraokeProAndroid_Project.zip -d project
+
+      - name: Perbaiki target Java dan Kotlin
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("project/app/build.gradle")
+          s = p.read_text()
+          addition = """
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = '17'
+              }
+          """
+          s = s.replace("android {", "android {\n" + addition, 1)
+          p.write_text(s)
+          PY
 
       - name: Bangun APK
         run: gradle -p project assembleDebug
