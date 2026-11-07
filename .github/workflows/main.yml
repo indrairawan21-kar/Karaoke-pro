@@ -1,4 +1,3 @@
-
 name: Build Karaoke Pro APK
 
 on:
@@ -6,7 +5,7 @@ on:
   push:
     paths:
       - 'KaraokeProAndroid_Project.zip'
-      - '.github/workflows/build-apk.yml'
+      - '.github/workflows/main.yml'
 
 jobs:
   build:
@@ -23,7 +22,7 @@ jobs:
           java-version: '17'
 
       - name: Siapkan Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@v3
 
       - name: Pasang Android SDK 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
@@ -57,7 +56,7 @@ jobs:
           p.write_text(s)
           PY
 
-     - name: Bangun APK
+      - name: Bangun APK
         run: gradle -p project assembleDebug
 
       - name: Periksa lokasi APK
@@ -72,8 +71,3 @@ jobs:
           name: Karaoke-Pro-APK
           path: project/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-      
-      
-        
-          
-      
